@@ -1,8 +1,11 @@
 import { Router, hashIntegration, Route, Routes } from "@solidjs/router";
+import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { styled } from "solid-styled-components";
 
 import Masthead from "./components/masthead";
 import Files from "./pages/files";
+import NativeApi from "./pages/native-api";
+import NTKDaemon from "./pages/ntk-daemon";
 import SystemInfo from "./pages/system-info";
 import AppThemeProvider from "./style/app-theme-provider";
 import GlobalStyles from "./style/global-styles";
@@ -11,17 +14,21 @@ import type { Component } from "solid-js";
 
 const App: Component = () => (
 	<Router source={hashIntegration()}>
-		<AppThemeProvider>
-			<GlobalStyles />
-			<UIRoot>
-				<Dragable />
-				<Masthead />
-				<Routes>
-					<Route path="/" element={<SystemInfo />} />
-					<Route path="/files" element={<Files />} />
-				</Routes>
-			</UIRoot>
-		</AppThemeProvider>
+		<QueryClientProvider client={new QueryClient()}>
+			<AppThemeProvider>
+				<GlobalStyles />
+				<UIRoot>
+					<Dragable />
+					<Masthead />
+					<Routes>
+						<Route path="/" element={<SystemInfo />} />
+						<Route path="/daemon" element={<NTKDaemon />} />
+						<Route path="/native-api" element={<NativeApi />} />
+						<Route path="/files" element={<Files />} />
+					</Routes>
+				</UIRoot>
+			</AppThemeProvider>
+		</QueryClientProvider>
 	</Router>
 );
 

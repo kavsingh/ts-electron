@@ -2,7 +2,7 @@ const { restrictFrom } = require("./lib");
 const tsconfig = require("../../tsconfig.json");
 
 const nodeOnlyImports = {
-	paths: ["electron", ...require("module").builtinModules],
+	paths: ["electron", "zeromq", ...require("module").builtinModules],
 	patterns: [],
 };
 

@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, session } from "electron";
 import { createIPCHandler } from "electron-trpc/main";
 
 import restrictNavigation from "./lib/restrict-navigation";
@@ -35,7 +35,7 @@ app.on("window-all-closed", () => {
 	if (process.platform !== "darwin") app.quit();
 });
 
-app.on("quit", () => {
+app.on("will-quit", () => {
 	stopHeartbeat?.();
 });
 
@@ -43,5 +43,27 @@ app.enableSandbox();
 void app.whenReady().then(() => {
 	trpcIpcHandler = createIPCHandler({ router: appRouter });
 	stopHeartbeat = startHeartbeat();
+
+	session.defaultSession.webRequest.onBeforeSendHeaders(
+		{ urls: [`${NATIVE_API_BASE_URL}/*`] },
+		(details, callback) => {
+			details.requestHeaders["User-Agent"] = NATIVE_API_USER_AGENT;
+			callback({ requestHeaders: details.requestHeaders });
+		},
+	);
+
+	session.defaultSession.webRequest.onHeadersReceived(
+		{ urls: [`${NATIVE_API_BASE_URL}/*`] },
+		(details, callback) => {
+			details.responseHeaders = Object.assign(details.responseHeaders ?? {}, {
+				"Access-Control-Allow-Origin": ["*"],
+				"Access-Control-Allow-Headers": ["*"],
+				"Access-Control-Allow-Methods": ["*"],
+				"Access-Control-Allow-Credentials": ["true"],
+			});
+			callback({ responseHeaders: details.responseHeaders });
+		},
+	);
+
 	showMainWindow();
 });
