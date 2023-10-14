@@ -1,26 +1,15 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
-import { useTRPCClient } from "#renderer/contexts/trpc-client";
+import { useAppQueryClients } from "#renderer/contexts/app-query-clients";
 
 export default function useFileSelectDialog() {
-	const client = useTRPCClient();
+	const { trpc } = useAppQueryClients();
 	const [files, setFiles] = useState<string[]>([]);
-
-	const showDialog = useCallback(
-		async (options?: Options) => {
-			const selectResult = await client.showOpenDialog.query({
-				properties: ["openFile", "multiSelections"],
-				...options,
-			});
-
-			setFiles(selectResult.filePaths);
+	const { mutate } = trpc.showOpenDialog.useMutation({
+		onSuccess(result) {
+			setFiles(result.filePaths);
 		},
-		[client.showOpenDialog],
-	);
+	});
 
-	return [files, showDialog] as const;
+	return [files, mutate] as const;
 }
-
-type Options = Parameters<
-	ReturnType<typeof useTRPCClient>["showOpenDialog"]["query"]
->[0];

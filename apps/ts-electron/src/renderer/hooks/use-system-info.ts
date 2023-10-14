@@ -1,27 +1,19 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { getQueryKey } from "@trpc/react-query";
 
-import { useTRPCClient } from "#renderer/contexts/trpc-client";
+import { useAppQueryClients } from "#renderer/contexts/app-query-clients";
 
 export default function useSystemInfo() {
-	const client = useTRPCClient();
-	const queryClient = useQueryClient();
-	const query = useQuery({
-		queryKey: ["systemInfo"],
-		queryFn: () => client.systemInfo.query(),
+	const { trpc, queryClient } = useAppQueryClients();
+	const query = trpc.systemInfo.useQuery();
+
+	trpc.systemInfoEvent.useSubscription(undefined, {
+		onData(data) {
+			queryClient.setQueryData(
+				getQueryKey(trpc.systemInfo, undefined, "query"),
+				() => data,
+			);
+		},
 	});
-
-	useEffect(() => {
-		const subscription = client.systemInfoEvent.subscribe(undefined, {
-			onData(data) {
-				queryClient.setQueryData(["systemInfo"], () => data);
-			},
-		});
-
-		return function cleanup() {
-			subscription.unsubscribe();
-		};
-	}, [client.systemInfoEvent, queryClient]);
 
 	return query;
 }

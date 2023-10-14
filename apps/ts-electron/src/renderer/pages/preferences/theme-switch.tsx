@@ -1,20 +1,15 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 import { THEME_SOURCES, themeSourceSchema } from "#common/lib/theme";
-import { useTRPCClient } from "#renderer/contexts/trpc-client";
+import { useAppQueryClients } from "#renderer/contexts/app-query-clients";
 
 import type { ThemeSource } from "#common/lib/theme";
 import type { ChangeEventHandler, FormEventHandler } from "react";
 
 export default function ThemeSwitch() {
-	const client = useTRPCClient();
-	const { data: themeSource, refetch } = useQuery({
-		queryKey: ["ThemeSource"],
-		queryFn: () => client.themeSource.query(),
-	});
-	const { mutate: saveThemeSource } = useMutation({
-		mutationFn: (source: ThemeSource) => client.setThemeSource.mutate(source),
+	const { trpc } = useAppQueryClients();
+	const { data: themeSource, refetch } = trpc.themeSource.useQuery();
+	const { mutate: saveThemeSource } = trpc.setThemeSource.useMutation({
 		onSuccess: () => void refetch(),
 	});
 

@@ -42,7 +42,7 @@ function DialogFileSelect({
 	const [files, selectFiles] = useFileSelectDialog();
 
 	const handleClick = useCallback(() => {
-		void selectFiles();
+		selectFiles();
 	}, [selectFiles]);
 
 	useEffect(() => {

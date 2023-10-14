@@ -1,26 +1,24 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
-import { TRPCClientProvider } from "#renderer/contexts/trpc-client";
-import { getTRPCClient } from "#renderer/trpc/client";
+import { AppQueryClientsProvider } from "#renderer/contexts/app-query-clients";
+import { getTRPC } from "#renderer/trpc";
 
 import type { PropsWithChildren } from "react";
 
 export function setupRenderWrapper() {
-	const trpcClient = getTRPCClient();
+	const trpc = getTRPC();
 	const queryClient = new QueryClient();
 	const user = userEvent.setup();
 
 	function Wrapper(props: PropsWithChildren) {
 		return (
-			<TRPCClientProvider client={trpcClient}>
-				<QueryClientProvider client={queryClient}>
-					<MemoryRouter>{props.children}</MemoryRouter>
-				</QueryClientProvider>
-			</TRPCClientProvider>
+			<AppQueryClientsProvider trpc={trpc} queryClient={queryClient}>
+				<MemoryRouter>{props.children}</MemoryRouter>
+			</AppQueryClientsProvider>
 		);
 	}
 
-	return { user, trpcClient, queryClient, Wrapper } as const;
+	return { user, trpc, queryClient, Wrapper } as const;
 }
