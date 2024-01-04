@@ -1,6 +1,6 @@
-import { Route, HashRouter } from "@solidjs/router";
-import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
-import { createEffect } from "solid-js";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
 import { TRPCClientProvider } from "./contexts/trpc-client";
 import useTheme from "./hooks/use-theme";
@@ -13,17 +13,21 @@ import { getTRPCClient } from "./trpc/client";
 export default function App() {
 	const theme = useTheme();
 
-	createEffect(() => {
-		document.documentElement.classList.toggle("dark", theme() === "dark");
-	});
+	useEffect(() => {
+		document.documentElement.classList.toggle("dark", theme === "dark");
+	}, [theme]);
 
 	return (
 		<TRPCClientProvider client={getTRPCClient()}>
 			<QueryClientProvider client={new QueryClient()}>
-				<HashRouter root={AppLayout}>
-					<Route path="/" component={SystemInfo} />
-					<Route path="/files" component={Files} />
-					<Route path="/preferences" component={Preferences} />
+				<HashRouter>
+					<Routes>
+						<Route element={<AppLayout />}>
+							<Route path="/" element={<SystemInfo />} />
+							<Route path="/files" element={<Files />} />
+							<Route path="/preferences" element={<Preferences />} />
+						</Route>
+					</Routes>
 				</HashRouter>
 			</QueryClientProvider>
 		</TRPCClientProvider>

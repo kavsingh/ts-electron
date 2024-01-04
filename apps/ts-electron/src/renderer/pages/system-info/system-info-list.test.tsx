@@ -1,4 +1,4 @@
-import { render, waitFor, screen } from "@solidjs/testing-library";
+import { render, waitFor, screen } from "@testing-library/react";
 import { describe, beforeEach, it, expect, vi } from "vitest";
 
 import { setupRenderWrapper } from "#renderer/__test-helpers__/render-wrapper";
@@ -15,11 +15,11 @@ describe("<SystemInfoList />", () => {
 
 		const { Wrapper } = setupRenderWrapper();
 
-		render(() => (
+		render(
 			<Wrapper>
 				<SystemInfoList />
-			</Wrapper>
-		));
+			</Wrapper>,
+		);
 
 		expect(screen.getByText("Loading...")).toBeInTheDocument();
 

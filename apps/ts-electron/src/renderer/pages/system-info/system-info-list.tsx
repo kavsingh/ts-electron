@@ -1,46 +1,42 @@
-import { Show } from "solid-js";
-
 import useSystemInfo from "#renderer/hooks/use-system-info";
 
-import type { ParentProps } from "solid-js";
+import type { PropsWithChildren } from "react";
 
 export default function SystemInfoList() {
-	const infoQuery = useSystemInfo();
+	const { data: info } = useSystemInfo();
+
+	if (!info) return <>Loading...</>;
 
 	return (
-		<Show when={infoQuery.data} fallback={<>Loading...</>} keyed>
-			{(info) => (
-				<ul class="m-0 flex list-none flex-col gap-2 p-0">
-					<InfoEntry>
-						<InfoEntryLabel>os</InfoEntryLabel>
-						<span>
-							{info.osName} ({info.osVersion}) {info.osArch}
-						</span>
-					</InfoEntry>
-					<InfoEntry>
-						<InfoEntryLabel>total memory</InfoEntryLabel>
-						<span>{formatMem(info.memTotal)}</span>
-					</InfoEntry>
-					<InfoEntry>
-						<InfoEntryLabel>available memory</InfoEntryLabel>
-						<span>{formatMem(info.memAvailable)}</span>
-					</InfoEntry>
-				</ul>
-			)}
-		</Show>
+		<ul className="m-0 flex list-none flex-col gap-2 p-0">
+			<InfoEntry>
+				<InfoEntryLabel>os</InfoEntryLabel>
+				<span>
+					{info.osName} ({info.osVersion}) {info.osArch}
+				</span>
+			</InfoEntry>
+			<InfoEntry>
+				<InfoEntryLabel>total memory</InfoEntryLabel>
+				<span>{formatMem(info.memTotal)}</span>
+			</InfoEntry>
+			<InfoEntry>
+				<InfoEntryLabel>available memory</InfoEntryLabel>
+				<span>{formatMem(info.memAvailable)}</span>
+			</InfoEntry>
+		</ul>
 	);
 }
 
-function InfoEntry(props: ParentProps) {
+function InfoEntry({ children }: PropsWithChildren) {
 	return (
-		<li class="flex gap-2 border-b border-b-neutral-200 pb-2 last:border-b-0 last:pb-0 dark:border-b-neutral-700">
-			{props.children}
+		<li className="flex gap-2 border-b border-b-neutral-200 pb-2 last:border-b-0 last:pb-0 dark:border-b-neutral-700">
+			{children}
 		</li>
 	);
 }
 
-function InfoEntryLabel(props: ParentProps) {
-	return <span class="font-semibold text-neutral-500">{props.children}</span>;
+function InfoEntryLabel({ children }: PropsWithChildren) {
+	return <span className="font-semibold text-neutral-500">{children}</span>;
 }
 
 function formatMem(mem: bigint) {

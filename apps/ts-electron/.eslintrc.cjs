@@ -25,9 +25,23 @@ module.exports = {
 			files: ["src/renderer/**/*"],
 			env: { node: false, browser: true },
 			settings: {
+				react: { version: "detect" },
 				tailwindcss: { callees: ["twMerge", "twJoin", "classList"] },
 			},
-			extends: ["plugin:solid/typescript", "plugin:tailwindcss/recommended"],
+			extends: [
+				"plugin:react/recommended",
+				"plugin:react/jsx-runtime",
+				"plugin:react-hooks/recommended",
+				"plugin:tailwindcss/recommended",
+			],
+			rules: {
+				"no-console": "error",
+				"react/jsx-filename-extension": [
+					"error",
+					{ extensions: [".tsx", ".jsx"] },
+				],
+				"react/prop-types": "off",
+			},
 		},
 		{
 			files: testFilePatterns({ root: "./src" }),
@@ -41,7 +55,7 @@ module.exports = {
 				root: "./src/renderer",
 				extensions: "[jt]s?(x)",
 			}),
-			extends: ["plugin:testing-library/dom", "plugin:jest-dom/recommended"],
+			extends: ["plugin:jest-dom/recommended", "plugin:testing-library/react"],
 		},
 		{
 			files: testFilePatterns({ root: "./e2e" }),

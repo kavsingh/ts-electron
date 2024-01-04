@@ -1,22 +1,22 @@
-import { Router } from "@solidjs/router";
-import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { userEvent } from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 
 import { TRPCClientProvider } from "#renderer/contexts/trpc-client";
 import { getTRPCClient } from "#renderer/trpc/client";
 
-import type { ParentProps } from "solid-js";
+import type { PropsWithChildren } from "react";
 
 export function setupRenderWrapper() {
 	const trpcClient = getTRPCClient();
 	const queryClient = new QueryClient();
 	const user = userEvent.setup();
 
-	function Wrapper(props: ParentProps) {
+	function Wrapper(props: PropsWithChildren) {
 		return (
 			<TRPCClientProvider client={trpcClient}>
 				<QueryClientProvider client={queryClient}>
-					<Router>{props.children}</Router>
+					<MemoryRouter>{props.children}</MemoryRouter>
 				</QueryClientProvider>
 			</TRPCClientProvider>
 		);

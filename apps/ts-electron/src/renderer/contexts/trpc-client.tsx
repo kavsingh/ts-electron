@@ -1,13 +1,12 @@
-import { createContext, useContext } from "solid-js";
+import { createContext, useContext } from "react";
 
 import type { AppTRPCClient } from "#renderer/trpc/client";
-import type { ParentProps } from "solid-js";
+import type { PropsWithChildren } from "react";
 
 export function TRPCClientProvider(
-	props: ParentProps<{ client: AppTRPCClient }>,
+	props: PropsWithChildren<{ client: AppTRPCClient }>,
 ) {
 	return (
-		// eslint-disable-next-line solid/reactivity
 		<TRPCClientContext.Provider value={props.client}>
 			{props.children}
 		</TRPCClientContext.Provider>
@@ -24,4 +23,4 @@ export function useTRPCClient() {
 	return value;
 }
 
-const TRPCClientContext = createContext<AppTRPCClient | undefined>();
+const TRPCClientContext = createContext<AppTRPCClient | undefined>(undefined);

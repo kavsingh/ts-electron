@@ -29,8 +29,8 @@ const restrictFromBrowser = {
 };
 
 const restrictFromNode = {
-	paths: [{ name: "solid-js" }, { name: "@trpc/client" }],
-	patterns: [{ group: ["solid-*", "@solidjs/-*", "tailwind-*"] }],
+	paths: [{ name: "react" }, { name: "@trpc/client" }],
+	patterns: [{ group: ["react-*", "@react/-*", "*/react", "tailwind-*"] }],
 };
 
 const baseImportOrderRule = baseConfig.rules?.["import/order"];
