@@ -1,9 +1,10 @@
-import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ipcLink } from "electron-trpc/renderer";
 import { createContext, useContext, useMemo } from "react";
 import { SuperJSON } from "superjson";
 
 import type { AppTRPC } from "#renderer/trpc";
+import type { QueryClient } from "@tanstack/react-query";
 import type { PropsWithChildren } from "react";
 
 export function AppQueryClientsProvider({
